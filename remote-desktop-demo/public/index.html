@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WebRTC Remote Desktop Demo</title><link rel="stylesheet" href="/style.css"></head>
+<body><main>
+  <h1>Remote Desktop / WebRTC Demo</h1>
+  <p class="muted">显式同意 · P2P 优先 · TURN 兜底 · 输入注入仅限 Windows 本机辅助程序</p>
+  <div class="panel">
+    <label>模式 <select id="role"><option value="host">被控端（共享屏幕）</option><option value="viewer">控制端（查看屏幕）</option></select></label>
+    <label>会话密钥（32位十六进制）<input id="room" autocomplete="off" spellcheck="false" placeholder="被控端自动生成；控制端粘贴"></label>
+    <button id="generate">生成会话密钥</button>
+    <button id="start">启动</button><button id="stop" disabled>断开</button>
+    <p id="status" role="status">未连接</p>
+  </div>
+  <section id="hostOptions" class="panel">
+    <h2>被控端控制授权</h2>
+    <p>屏幕分享由浏览器系统弹窗批准。仅在需要鼠标键盘时启动 Windows Agent。</p>
+    <label>Windows Agent 一次性 Token <input id="agentToken" type="password" autocomplete="off"></label>
+    <button id="connectAgent">连接本机 Agent</button>
+    <label><input id="allowControl" type="checkbox" disabled> 允许远端鼠标与键盘操作（可随时取消）</label>
+  </section>
+  <section class="panel">
+    <h2>画面 <span id="metrics" class="muted"></span></h2>
+    <video id="remote" autoplay playsinline tabindex="0"></video>
+    <p class="muted">控制端：点击画面后使用鼠标和键盘；Esc 退出键盘控制。请勿通过未受信任的会话操作敏感信息。</p>
+  </section>
+</main><script src="/app.js" defer></script></body></html>
