@@ -14,7 +14,9 @@ if (!string.IsNullOrWhiteSpace(extraOrigin)) allowed.Add(extraOrigin.TrimEnd('/'
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://127.0.0.1:8765");
 var app = builder.Build();
-app.UseWebSockets(new WebSocketOptions { AllowedOrigins = allowed.ToList() });
+var webSocketOptions = new WebSocketOptions();
+foreach (var origin in allowed) webSocketOptions.AllowedOrigins.Add(origin);
+app.UseWebSockets(webSocketOptions);
 
 app.Map("/agent", async (HttpContext ctx) =>
 {
@@ -39,7 +41,7 @@ app.Map("/agent", async (HttpContext ctx) =>
             if (result.MessageType != WebSocketMessageType.Text || !result.EndOfMessage) continue;
             try
             {
-                using var doc = JsonDocument.Parse(buffer.AsSpan(0, result.Count));
+                using var doc = JsonDocument.Parse(buffer.AsMemory(0, result.Count));
                 InputInjector.Handle(doc.RootElement);
             }
             catch (JsonException) { }
