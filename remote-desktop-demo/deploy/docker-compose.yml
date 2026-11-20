@@ -1,0 +1,21 @@
+services:
+  signaling:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      HOST: 0.0.0.0
+      STUN_URL: stun:your-domain.example:3478
+      TURN_URLS: turn:your-domain.example:3478?transport=udp,turns:your-domain.example:5349?transport=tcp
+      TURN_SECRET: ${TURN_SECRET:?set TURN_SECRET in .env}
+    ports:
+      - "127.0.0.1:3000:3000"
+  coturn:
+    image: coturn/coturn:4.6
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - ./turnserver.conf:/etc/turnserver.conf:ro
+    command: ["-c", "/etc/turnserver.conf"]
